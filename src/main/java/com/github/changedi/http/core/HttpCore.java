@@ -93,16 +93,16 @@ public class HttpCore {
 				.setDefaultRequestConfig(defaultRequestConfig).build();
 	}
 
-	public String get(String url) throws Exception {
+	public String get(HttpParam httpParam) throws Exception {
 		try {
-			HttpGet httpget = new HttpGet(url);
+			HttpGet httpget = new HttpGet(httpParam.getUri());
 			// Request configuration can be overridden at the request level.
 			// They will take precedence over the one set at the client level.
 			RequestConfig requestConfig = RequestConfig
 					.copy(defaultRequestConfig).setSocketTimeout(5000)
 					.setConnectTimeout(5000).setConnectionRequestTimeout(5000)
 					.build();
-			httpget.setConfig(requestConfig);
+			httpget.setConfig(httpParam.getRequestConfig());
 
 			// Create a custom response handler
 			ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
