@@ -20,6 +20,7 @@ import java.nio.charset.CodingErrorAction;
 import java.util.Arrays;
 
 import org.apache.http.Consts;
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -96,13 +97,9 @@ public class HttpCore {
 	public String get(HttpParam httpParam) throws Exception {
 		try {
 			HttpGet httpget = new HttpGet(httpParam.getUri());
-			// Request configuration can be overridden at the request level.
-			// They will take precedence over the one set at the client level.
-			RequestConfig requestConfig = RequestConfig
-					.copy(defaultRequestConfig).setSocketTimeout(5000)
-					.setConnectTimeout(5000).setConnectionRequestTimeout(5000)
-					.build();
-			httpget.setConfig(httpParam.getRequestConfig());
+			httpget.setHeaders(httpParam.getHeadersArray());
+			if (httpParam.getRequestConfig() != null)
+				httpget.setConfig(httpParam.getRequestConfig());
 
 			// Create a custom response handler
 			ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
