@@ -4,7 +4,7 @@ import java.util.Map;
 
 import com.google.common.collect.Maps;
 
-public class DemoService {
+public class DemoService extends HttpServiceAware{
 
 	@HttpService
 	private BaiduHttpService service;
