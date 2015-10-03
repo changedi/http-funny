@@ -8,6 +8,10 @@ public class DemoService extends HttpServiceAware{
 
 	@HttpService
 	private BaiduHttpService service;
+	
+	public DemoService() {
+		super();
+	}
 
 	public Map<String, Object> get() {
 		Map<String, Object> querys = Maps.newHashMap();

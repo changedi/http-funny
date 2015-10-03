@@ -15,8 +15,7 @@ public class HttpCoreTest extends TestCase {
 		hc.init();
 		String result = "";
 		try {
-			HttpParam param = new HttpParam();
-			param.setURI(
+			HttpParam param = new HttpParam().setURI(
 					new URIBuilder().setScheme("http")
 							.setHost("apis.baidu.com")
 							.setPath("/apistore/weatherservice/citylist")

@@ -2,9 +2,15 @@ package com.github.changedi.http.core;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.lang.reflect.Proxy;
+
+import net.sf.cglib.proxy.Enhancer;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 public abstract class HttpServiceAware {
+
+	protected final Log logger = LogFactory.getLog(getClass());
 
 	private ProxyHandler proxyHandler;
 
@@ -15,14 +21,15 @@ public abstract class HttpServiceAware {
 		Field[] fields = clz.getDeclaredFields();
 		assert (fields != null);
 		for (Field field : fields) {
-			System.out.println(field);
 			Annotation httpServiceAnnotation = field
 					.getAnnotation(HttpService.class);
 			if (httpServiceAnnotation != null) {
 				Class<?> type = field.getType();
-				System.out.println(type);
-				Object object = Proxy.newProxyInstance(type.getClassLoader(),
-						new Class<?>[] { type }, proxyHandler);
+				Enhancer enhancer = new Enhancer();
+				enhancer.setSuperclass(type);
+				enhancer.setClassLoader(type.getClassLoader());
+				enhancer.setCallback(proxyHandler);
+				Object object = enhancer.create();
 				field.setAccessible(true);
 				try {
 					field.set(this, object);
@@ -34,7 +41,6 @@ public abstract class HttpServiceAware {
 					e.printStackTrace();
 				}
 			}
-			System.out.println(httpServiceAnnotation);
 		}
 	}
 

@@ -31,8 +31,9 @@ public class HttpParam {
 		super();
 	}
 
-	public void addHeader(String key, String value) {
+	public HttpParam addHeader(String key, String value) {
 		headers.add(new BasicHeader(key, value));
+		return this;
 	}
 
 	/**
@@ -72,6 +73,15 @@ public class HttpParam {
 	 */
 	public RequestConfig getRequestConfig() {
 		return requestConfig;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "HttpParam [uri=" + uri + ", requestConfig=" + requestConfig
+				+ ", headers=" + headers + "]";
 	}
 
 }

@@ -20,7 +20,6 @@ import java.nio.charset.CodingErrorAction;
 import java.util.Arrays;
 
 import org.apache.http.Consts;
-import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
