@@ -43,6 +43,11 @@ public class HttpParam {
 		return headers;
 	}
 
+	public HttpParam setHeaders(List<Header> headers) {
+		this.headers = headers;
+		return this;
+	}
+
 	public Header[] getHeadersArray() {
 		Header[] hs = new Header[0];
 		for (Header h : headers) {
@@ -75,7 +80,9 @@ public class HttpParam {
 		return requestConfig;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override

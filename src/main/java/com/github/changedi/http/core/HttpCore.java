@@ -45,8 +45,13 @@ import org.apache.http.util.EntityUtils;
  */
 public class HttpCore {
 
+	private static HttpCore hc;
 	RequestConfig defaultRequestConfig;
 	CloseableHttpClient httpclient;
+
+	private HttpCore() {
+		init();
+	}
 
 	public void init() {
 		// Create a connection manager with custom configuration.
@@ -128,4 +133,10 @@ public class HttpCore {
 		}
 	}
 
+	public static HttpCore getInstance() {
+		if (hc == null) {
+			hc = new HttpCore();
+		}
+		return hc;
+	}
 }

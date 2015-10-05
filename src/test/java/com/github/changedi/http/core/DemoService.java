@@ -18,7 +18,12 @@ public class DemoService extends HttpServiceAware{
 		Map<String, Object> paths = Maps.newHashMap();
 		Map<String, Object> headers = Maps.newHashMap();
 		querys.put("cityname", "杭州");
-		Map<String, Object> result = service.listcity(querys, paths, headers);
+		headers.put("apikey", "31da01966ee96d06fdd5c2f2c855424e");
+		paths.put("pathId", "weatherservice");
+//		Map<String, Object> result = service.listcity(querys, paths, headers);
+		Map<String, Object> result = service.listcity2(querys, paths, new Callback(){
+			
+		});
 		return result;
 	}
 }
