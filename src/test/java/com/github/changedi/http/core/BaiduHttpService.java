@@ -6,15 +6,16 @@ import java.util.Map;
 @Host("apis.baidu.com")
 public abstract class BaiduHttpService {
 
-	@Get
+	@Method
 	@Path("/apistore/{pathId}/citylist")
 	abstract Map<String, Object> listcity(@QueryParam Map<String, Object> querys,
 			@PathParam Map<String, Object> paths,
 			@HeaderParam Map<String, Object> headers);
 	
-	@Get
+	@Method("get")
 	@Path("/apistore/weatherservice/citylist")
+	@Serialization("json")
 	abstract Map<String, Object> listcity2(@QueryParam Map<String, Object> querys,
-			@PathParam Map<String, Object> paths, Callback callback);
+			@PathParam Map<String, Object> paths, @HeaderParam Map<String, Object> headers, Callback callback);
 
 }

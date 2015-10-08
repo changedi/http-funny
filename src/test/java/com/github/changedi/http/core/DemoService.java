@@ -21,8 +21,11 @@ public class DemoService extends HttpServiceAware{
 		headers.put("apikey", "31da01966ee96d06fdd5c2f2c855424e");
 		paths.put("pathId", "weatherservice");
 //		Map<String, Object> result = service.listcity(querys, paths, headers);
-		Map<String, Object> result = service.listcity2(querys, paths, new Callback(){
-			
+		Map<String, Object> result = service.listcity2(querys, paths, headers, new Callback(){
+			public void execute(Map<String,Object> q, Map<String,Object> p, Map<String,Object> h){
+				System.out.println(q);
+				q.put("aa", "bb");
+			}
 		});
 		return result;
 	}

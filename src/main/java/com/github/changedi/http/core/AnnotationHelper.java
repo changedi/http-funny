@@ -62,7 +62,7 @@ public class AnnotationHelper {
 	 * @throws IllegalAccessException
 	 * @throws InvocationTargetException
 	 */
-	private String extractAnnotationValueInternal(Class annotationClass,
+	private String extractAnnotationValueInternal(Class<?> annotationClass,
 			Annotation annotation, String methodName)
 			throws NoSuchMethodException, IllegalAccessException,
 			InvocationTargetException {
@@ -86,11 +86,18 @@ public class AnnotationHelper {
 		Map<String, Object> paths = Maps.newHashMap();
 		Annotation[][] parameterAnnotations = method.getParameterAnnotations();
 		for (int i = 0; i < parameterAnnotations.length; i++) {
-			assert (parameterAnnotations[i].length == 1) : "You should have only one annotation on every parameter.";
-			if (parameterAnnotations[i][0].annotationType() == cls) {
+			assert (parameterAnnotations[i].length <= 1) : "You should have at most one annotation on every parameter.";
+			if (parameterAnnotations[i].length > 0
+					&& parameterAnnotations[i][0].annotationType() == cls) {
 				paths = (Map<String, Object>) aobj[i];
 			}
 		}
 		return paths;
+	}
+
+	public boolean hasAnnotation(Class<?> clz, Method method,
+			Class annotationClass) {
+		return method.getAnnotation(annotationClass) == null ? (clz
+				.getAnnotation(annotationClass) == null ? false : true) : true;
 	}
 }

@@ -124,9 +124,6 @@ public class HttpCore {
 
 			};
 			String responseBody = httpclient.execute(httpget, responseHandler);
-			System.out.println("----------------------------------------");
-			System.out.println(responseBody);
-			System.out.println("----------------------------------------");
 			return responseBody;
 		} finally {
 			httpclient.close();

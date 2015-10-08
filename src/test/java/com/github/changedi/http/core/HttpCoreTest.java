@@ -11,8 +11,7 @@ public class HttpCoreTest extends TestCase {
 
 	@Test
 	public void testGet() {
-		HttpCore hc = new HttpCore();
-		hc.init();
+		HttpCore hc = HttpCore.getInstance();
 		String result = "";
 		try {
 			HttpParam param = new HttpParam().setURI(
