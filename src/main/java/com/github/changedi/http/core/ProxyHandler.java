@@ -39,23 +39,23 @@ public class ProxyHandler implements InvocationHandler {
 		// add host
 		processHost(clz, method, builder, "");
 
-		Map<String, Object> querys = Maps.newHashMap();
+		Map<String, Object> queries = Maps.newHashMap();
 		Map<String, Object> paths = Maps.newHashMap();
 		Map<String, Object> headersMap = Maps.newHashMap();
 		// process query parameters
-		processQuery(method, aobj, querys);
+		processParamAnnotation(clz, method, aobj, queries, QueryParam.class);
 
 		// process path parameters
-		processPath(method, aobj, paths);
+		processParamAnnotation(clz, method, aobj, paths, PathParam.class);
 
 		// process header parameters
-		processHeader(clz, method, aobj, headersMap);
+		processParamAnnotation(clz, method, aobj, headersMap, HeaderParam.class);
 
 		// process callback
-		processCallback(method, aobj, querys, paths, headersMap);
+		processCallback(method, aobj, queries, paths, headersMap);
 
 		// form builder and header
-		form(clz, method, querys, paths, headersMap, builder, headers);
+		form(clz, method, queries, paths, headersMap, builder, headers);
 
 		HttpParam param = new HttpParam()
 				.setURI(builder.build())
@@ -67,7 +67,7 @@ public class ProxyHandler implements InvocationHandler {
 		System.out.println(param);
 		System.out.println("proxy invoke");
 		String response = httpCore.get(param);
-		SerializeEnum serialization = processSerialization(clz, method);
+		SerializationEnum serialization = processSerialization(clz, method);
 		Type returnType = method.getReturnType();
 		switch (serialization) {
 		case STRING:
@@ -80,14 +80,14 @@ public class ProxyHandler implements InvocationHandler {
 		return null;
 	}
 
-	private SerializeEnum processSerialization(Class<?> clz, Method method) {
-		String serialization = helper.extractAnnotationValue(clz, method, "string",
-				Serialization.class, "value");
+	private SerializationEnum processSerialization(Class<?> clz, Method method) {
+		String serialization = helper.extractAnnotationValue(clz, method,
+				"string", Serialization.class, "value");
 		if ("json".equalsIgnoreCase(serialization))
-			return SerializeEnum.JSON;
+			return SerializationEnum.JSON;
 		else if ("xml".equalsIgnoreCase(serialization))
-			return SerializeEnum.XML;
-		return SerializeEnum.STRING;
+			return SerializationEnum.XML;
+		return SerializationEnum.STRING;
 	}
 
 	private void form(Class<?> clz, Method method, Map<String, Object> querys,
@@ -121,30 +121,13 @@ public class ProxyHandler implements InvocationHandler {
 		}
 	}
 
-	private void processHeader(Class<?> clz, Method method, Object[] aobj,
-			Map<String, Object> headersMap) {
-		Map<String, Object> headers = helper.extractParameterAnnotation(method,
-				aobj, HeaderParam.class);
-		for (String key : headers.keySet()) {
-			headersMap.put(key, headers.get(key).toString());
-		}
-	}
-
-	private void processPath(Method method, Object[] aobj,
-			Map<String, Object> paths) {
-		Map<String, Object> paths2 = helper.extractParameterAnnotation(method,
-				aobj, PathParam.class);
-		for (String key : paths2.keySet()) {
-			paths.put(key, paths2.get(key).toString());
-		}
-	}
-
-	private void processQuery(Method method, Object[] aobj,
-			Map<String, Object> querys) {
-		Map<String, Object> queries = helper.extractParameterAnnotation(method,
-				aobj, QueryParam.class);
-		for (String key : queries.keySet()) {
-			querys.put(key, queries.get(key).toString());
+	private void processParamAnnotation(Class<?> clz, Method method,
+			Object[] aobj, Map<String, Object> paramMap,
+			Class paramAnnotationClass) {
+		Map<String, Object> params = helper.extractParameterAnnotation(method,
+				aobj, paramAnnotationClass);
+		for (String key : params.keySet()) {
+			paramMap.put(key, params.get(key).toString());
 		}
 	}
 
