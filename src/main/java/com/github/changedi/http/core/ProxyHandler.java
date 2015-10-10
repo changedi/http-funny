@@ -9,6 +9,7 @@ import net.sf.cglib.proxy.InvocationHandler;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Header;
+import org.apache.http.HttpEntity;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.message.BasicHeader;
@@ -31,6 +32,7 @@ public class ProxyHandler implements InvocationHandler {
 			throws Throwable {
 		URIBuilder builder = new URIBuilder();
 		List<Header> headers = Lists.newArrayList();
+		HttpEntity entity = null;
 
 		Class<?> clz = obj.getClass();
 		// process scheme
@@ -42,6 +44,7 @@ public class ProxyHandler implements InvocationHandler {
 		Map<String, Object> queries = Maps.newHashMap();
 		Map<String, Object> paths = Maps.newHashMap();
 		Map<String, Object> headersMap = Maps.newHashMap();
+		Map<String, Object> body = Maps.newHashMap();
 		// process query parameters
 		processParamAnnotation(clz, method, aobj, queries, QueryParam.class);
 
@@ -51,11 +54,17 @@ public class ProxyHandler implements InvocationHandler {
 		// process header parameters
 		processParamAnnotation(clz, method, aobj, headersMap, HeaderParam.class);
 
+		// process body parameters
+		processParamAnnotation(clz, method, aobj, body, BodyParam.class);
+
 		// process callback
-		processCallback(method, aobj, queries, paths, headersMap);
+		processCallback(method, aobj, queries, paths, headersMap, body);
 
 		// form builder and header
 		form(clz, method, queries, paths, headersMap, builder, headers);
+
+		// form entity
+		form(method, body, entity);
 
 		HttpParam param = new HttpParam()
 				.setURI(builder.build())
@@ -63,10 +72,13 @@ public class ProxyHandler implements InvocationHandler {
 						RequestConfig.copy(HttpParam.DEFAULT_REQUEST_CONFIG)
 								.setSocketTimeout(5000).setConnectTimeout(5000)
 								.setConnectionRequestTimeout(5000).build())
-				.setHeaders(headers);
+				.setHeaders(headers).setEntity(entity);
 		System.out.println(param);
 		System.out.println("proxy invoke");
-		String response = httpCore.get(param);
+
+		// http call
+		String response = processHttpMethod(clz, method, param);
+
 		SerializationEnum serialization = processSerialization(clz, method);
 		Type returnType = method.getReturnType();
 		switch (serialization) {
@@ -78,6 +90,24 @@ public class ProxyHandler implements InvocationHandler {
 			throw new UnsupportedOperationException();
 		}
 		return null;
+	}
+
+	private void form(Method method, Map<String, Object> body, HttpEntity entity) {
+		String postType = helper.extractParameterAnnotationValue(method,
+				"string", BodyParam.class, "value");
+		// TODO
+	}
+
+	private String processHttpMethod(Class<?> clz, Method method,
+			HttpParam param) throws Exception {
+		String response = "";
+		String httpMethod = helper.extractAnnotationValue(clz, method, "get",
+				Method.class, "value");
+		if ("get".equalsIgnoreCase(httpMethod)) {
+			response = httpCore.get(param);
+		}
+
+		return response;
 	}
 
 	private SerializationEnum processSerialization(Class<?> clz, Method method) {
@@ -112,10 +142,10 @@ public class ProxyHandler implements InvocationHandler {
 
 	private void processCallback(Method method, Object[] aobj,
 			Map<String, Object> querys, Map<String, Object> paths,
-			Map<String, Object> headersMap) {
+			Map<String, Object> headersMap, Map<String, Object> body) {
 		for (Object o : aobj) {
 			if (o instanceof Callback) {
-				((Callback) o).execute(querys, paths, headersMap);
+				((Callback) o).execute(querys, paths, headersMap, body);
 				break;
 			}
 		}

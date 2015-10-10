@@ -66,11 +66,10 @@ public class AnnotationHelper {
 			Annotation annotation, String methodName)
 			throws NoSuchMethodException, IllegalAccessException,
 			InvocationTargetException {
-		String hostStr;
 		Object o = annotationClass.cast(annotation);
 		Method m = o.getClass().getMethod(methodName);
-		hostStr = m.invoke(o).toString();
-		return hostStr;
+		String value = m.invoke(o).toString();
+		return value;
 	}
 
 	/**
@@ -83,16 +82,38 @@ public class AnnotationHelper {
 	@SuppressWarnings("unchecked")
 	public Map<String, Object> extractParameterAnnotation(Method method,
 			Object[] aobj, Class<?> cls) {
-		Map<String, Object> paths = Maps.newHashMap();
+		Map<String, Object> params = Maps.newHashMap();
 		Annotation[][] parameterAnnotations = method.getParameterAnnotations();
 		for (int i = 0; i < parameterAnnotations.length; i++) {
 			assert (parameterAnnotations[i].length <= 1) : "You should have at most one annotation on every parameter.";
 			if (parameterAnnotations[i].length > 0
 					&& parameterAnnotations[i][0].annotationType() == cls) {
-				paths = (Map<String, Object>) aobj[i];
+				params = (Map<String, Object>) aobj[i];
+				break;
 			}
 		}
-		return paths;
+		return params;
+	}
+
+	public String extractParameterAnnotationValue(Method method,
+			String defaultValue, Class<?> annotationClass, String methodName) {
+		String value = defaultValue;
+		try {
+			Annotation[][] parameterAnnotations = method
+					.getParameterAnnotations();
+			for (int i = 0; i < parameterAnnotations.length; i++) {
+				assert (parameterAnnotations[i].length <= 1) : "You should have at most one annotation on every parameter.";
+				if (parameterAnnotations[i].length > 0
+						&& parameterAnnotations[i][0].annotationType() == annotationClass) {
+					value = extractAnnotationValueInternal(annotationClass,
+							parameterAnnotations[i][0], methodName);
+					break;
+				}
+			}
+		} catch (Exception e) {
+
+		}
+		return value;
 	}
 
 	public boolean hasAnnotation(Class<?> clz, Method method,

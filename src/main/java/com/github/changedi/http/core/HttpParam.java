@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.http.Header;
+import org.apache.http.HttpEntity;
 import org.apache.http.client.config.AuthSchemes;
 import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
@@ -27,8 +28,26 @@ public class HttpParam {
 	private RequestConfig requestConfig;
 	private List<Header> headers = Lists.newArrayList();
 
+	private HttpEntity entity;
+
 	public HttpParam() {
 		super();
+	}
+
+	/**
+	 * @return the entity
+	 */
+	public HttpEntity getEntity() {
+		return entity;
+	}
+
+	/**
+	 * @param entity
+	 *            the entity to set
+	 */
+	public HttpParam setEntity(HttpEntity entity) {
+		this.entity = entity;
+		return this;
 	}
 
 	public HttpParam addHeader(String key, String value) {
@@ -88,7 +107,7 @@ public class HttpParam {
 	@Override
 	public String toString() {
 		return "HttpParam [uri=" + uri + ", requestConfig=" + requestConfig
-				+ ", headers=" + headers + "]";
+				+ ", headers=" + headers + ", entity=" + entity + "]";
 	}
 
 }
