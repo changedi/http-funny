@@ -1,5 +1,6 @@
 package com.github.changedi.http.core;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.List;
@@ -8,12 +9,28 @@ import java.util.Map;
 import net.sf.cglib.proxy.InvocationHandler;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.Consts;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.entity.EntityBuilder;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.entity.ContentType;
 import org.apache.http.message.BasicHeader;
+import org.apache.http.message.BasicNameValuePair;
 
+import com.github.changedi.http.annotation.BodyParam;
+import com.github.changedi.http.annotation.HeaderParam;
+import com.github.changedi.http.annotation.Host;
+import com.github.changedi.http.annotation.HttpMethod;
+import com.github.changedi.http.annotation.Path;
+import com.github.changedi.http.annotation.PathParam;
+import com.github.changedi.http.annotation.QueryParam;
+import com.github.changedi.http.annotation.Scheme;
+import com.github.changedi.http.annotation.Serialization;
+import com.github.changedi.http.annotation.consts.SerializationEnum;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
@@ -64,7 +81,7 @@ public class ProxyHandler implements InvocationHandler {
 		form(clz, method, queries, paths, headersMap, builder, headers);
 
 		// form entity
-		form(method, body, entity);
+		entity = form(method, body);
 
 		HttpParam param = new HttpParam()
 				.setURI(builder.build())
@@ -92,19 +109,35 @@ public class ProxyHandler implements InvocationHandler {
 		return null;
 	}
 
-	private void form(Method method, Map<String, Object> body, HttpEntity entity) {
+	private HttpEntity form(Method method, Map<String, Object> body) {
+		HttpEntity entity = null;
 		String postType = helper.extractParameterAnnotationValue(method,
-				"string", BodyParam.class, "value");
+				"form", BodyParam.class, "value");
 		// TODO
+		if ("form".equalsIgnoreCase(postType)) {
+			List<NameValuePair> parameters = Lists.newArrayList();
+			for (String key : body.keySet()) {
+				parameters.add(new BasicNameValuePair(key, body.get(key)
+						.toString()));
+			}
+			entity = new UrlEncodedFormEntity(parameters, Consts.UTF_8);
+		} else if ("json"
+				.equalsIgnoreCase(postType)) {
+
+		}
+		return entity;
 	}
 
 	private String processHttpMethod(Class<?> clz, Method method,
 			HttpParam param) throws Exception {
 		String response = "";
 		String httpMethod = helper.extractAnnotationValue(clz, method, "get",
-				Method.class, "value");
+				HttpMethod.class, "value");
+		System.out.println("method:" + httpMethod);
 		if ("get".equalsIgnoreCase(httpMethod)) {
 			response = httpCore.get(param);
+		} else if ("post".equalsIgnoreCase(httpMethod)) {
+			response = httpCore.post(param);
 		}
 
 		return response;

@@ -8,6 +8,8 @@ import net.sf.cglib.proxy.Enhancer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.github.changedi.http.annotation.HttpService;
+
 public abstract class HttpServiceAware {
 
 	protected final Log logger = LogFactory.getLog(getClass());

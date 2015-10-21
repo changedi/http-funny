@@ -1,12 +1,11 @@
-package com.github.changedi.http.core;
+package com.github.changedi.http.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target({ElementType.METHOD})
+@Target({ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Method {
-	String value() default "get";
+public @interface QueryParam {
 }

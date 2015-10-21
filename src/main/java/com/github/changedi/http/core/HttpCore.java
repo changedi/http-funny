@@ -134,11 +134,6 @@ public class HttpCore {
 	}
 
 	public String post(HttpParam httpParam) throws Exception {
-		StringEntity entity = new StringEntity("important message",
-				ContentType.create("plain/text", Consts.UTF_8));
-		entity.setChunked(true);
-		
-		
 		try {
 			HttpPost httppost = new HttpPost(httpParam.getUri());
 			httppost.setHeaders(httpParam.getHeadersArray());
@@ -164,7 +159,7 @@ public class HttpCore {
 				}
 
 			};
-			String responseBody = httpclient.execute(httpget, responseHandler);
+			String responseBody = httpclient.execute(httppost, responseHandler);
 			return responseBody;
 		} finally {
 			httpclient.close();

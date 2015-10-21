@@ -1,11 +1,14 @@
-package com.github.changedi.http.core;
+package com.github.changedi.http.annotation;
 
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target({ ElementType.PARAMETER })
+@Inherited
+@Target({ ElementType.TYPE, ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
-public @interface HeaderParam {
+public @interface Path {
+	String value() default "";
 }

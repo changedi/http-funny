@@ -1,4 +1,4 @@
-package com.github.changedi.http.core;
+package com.github.changedi.http.annotation.consts;
 
 public enum HttpMethodEnum {
 

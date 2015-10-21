@@ -33,23 +33,23 @@ public class AnnotationHelper {
 	 */
 	public String extractAnnotationValue(Class<?> clz, Method method,
 			String defaultValue, Class annotationClass, String methodName) {
-		String hostStr = defaultValue;
+		String annotationValue = defaultValue;
 		try {
 			Annotation annotation = method.getAnnotation(annotationClass);
 			if (annotation != null) {
-				hostStr = extractAnnotationValueInternal(annotationClass,
+				annotationValue = extractAnnotationValueInternal(annotationClass,
 						annotation, methodName);
 			} else {
 				annotation = clz.getAnnotation(annotationClass);
 				if (annotation != null) {
-					hostStr = extractAnnotationValueInternal(annotationClass,
+					annotationValue = extractAnnotationValueInternal(annotationClass,
 							annotation, methodName);
 				}
 			}
 		} catch (Exception e) {
 
 		}
-		return hostStr;
+		return annotationValue;
 	}
 
 	/**
