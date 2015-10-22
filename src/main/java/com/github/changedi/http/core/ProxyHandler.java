@@ -1,6 +1,5 @@
 package com.github.changedi.http.core;
 
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.List;
@@ -14,10 +13,10 @@ import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.entity.EntityBuilder;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
 
@@ -31,6 +30,7 @@ import com.github.changedi.http.annotation.QueryParam;
 import com.github.changedi.http.annotation.Scheme;
 import com.github.changedi.http.annotation.Serialization;
 import com.github.changedi.http.annotation.consts.SerializationEnum;
+import com.github.changedi.http.exception.HttpConfigException;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
@@ -113,7 +113,6 @@ public class ProxyHandler implements InvocationHandler {
 		HttpEntity entity = null;
 		String postType = helper.extractParameterAnnotationValue(method,
 				"form", BodyParam.class, "value");
-		// TODO
 		if ("form".equalsIgnoreCase(postType)) {
 			List<NameValuePair> parameters = Lists.newArrayList();
 			for (String key : body.keySet()) {
@@ -121,9 +120,16 @@ public class ProxyHandler implements InvocationHandler {
 						.toString()));
 			}
 			entity = new UrlEncodedFormEntity(parameters, Consts.UTF_8);
-		} else if ("json"
-				.equalsIgnoreCase(postType)) {
-
+		} else if ("json".equalsIgnoreCase(postType)) {
+			String content = "";
+			for (Object value : body.values()) {
+				if (value instanceof String)
+					content += value;
+				else
+					content += gson.toJson(value);
+			}
+			System.out.println(content);
+			entity = new StringEntity(content, ContentType.APPLICATION_JSON);
 		}
 		return entity;
 	}
@@ -190,7 +196,7 @@ public class ProxyHandler implements InvocationHandler {
 		Map<String, Object> params = helper.extractParameterAnnotation(method,
 				aobj, paramAnnotationClass);
 		for (String key : params.keySet()) {
-			paramMap.put(key, params.get(key).toString());
+			paramMap.put(key, params.get(key));
 		}
 	}
 

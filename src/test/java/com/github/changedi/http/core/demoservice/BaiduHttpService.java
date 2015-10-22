@@ -19,7 +19,7 @@ public abstract class BaiduHttpService {
 
 	@HttpMethod
 	@Path("/apistore/{pathId}/citylist")
-	abstract Map<String, Object> listcity(
+	public abstract Map<String, Object> listcity(
 			@QueryParam Map<String, Object> querys,
 			@PathParam Map<String, Object> paths,
 			@HeaderParam Map<String, Object> headers);
@@ -27,7 +27,7 @@ public abstract class BaiduHttpService {
 	@HttpMethod("get")
 	@Path("/apistore/weatherservice/citylist")
 	@Serialization("json")
-	abstract Map<String, Object> listcity2(
+	public abstract Map<String, Object> listcity2(
 			@QueryParam Map<String, Object> querys,
 			@PathParam Map<String, Object> paths,
 			@HeaderParam Map<String, Object> headers, Callback callback);
@@ -35,11 +35,19 @@ public abstract class BaiduHttpService {
 	@HttpMethod("post")
 	@Path("/apistore/idlocr/ocr")
 	@Serialization("json")
-	abstract Map<String, Object> ocr(
+	public abstract Map<String, Object> ocr(
 			@QueryParam Map<String, Object> querys,
 			@PathParam Map<String, Object> paths,
 			@HeaderParam Map<String, Object> headers,
-			@BodyParam("form") Map<String, Object> body,
-			Callback callback);
+			@BodyParam("form") Map<String, Object> body, Callback callback);
+
+	@HttpMethod("post")
+	@Path("/idl_baidu/faceverifyservice/face_deleteuser")
+	@Serialization("json")
+	public abstract Map<String, Object> face_deleteuser(
+			@QueryParam Map<String, Object> querys,
+			@PathParam Map<String, Object> paths,
+			@HeaderParam Map<String, Object> headers,
+			@BodyParam("json") Map<String, Object> body, Callback callback);
 
 }

@@ -1,4 +1,4 @@
-package com.github.changedi.http.core;
+package com.github.changedi.http.exception;
 
 public class HttpConfigException extends Exception {
 

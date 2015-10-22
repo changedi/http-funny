@@ -24,4 +24,12 @@ public class DemoServiceTest {
 		System.out.println(result);
 		Assert.assertNotNull(result);
 	}
+
+	@Test
+	public void testPostJson() {
+		DemoService demoService = new DemoService();
+		Map<String, Object> result = demoService.postJson();
+		System.out.println(result);
+		Assert.assertNotNull(result);
+	}
 }

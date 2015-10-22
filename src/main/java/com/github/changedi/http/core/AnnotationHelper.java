@@ -7,6 +7,13 @@ import java.util.Map;
 
 import com.google.common.collect.Maps;
 
+/**
+ * 标注处理工具类.
+ * 
+ * @author zunyuan.jy
+ *
+ * @since 2015年10月21日
+ */
 public class AnnotationHelper {
 
 	private static AnnotationHelper helper;
@@ -15,6 +22,11 @@ public class AnnotationHelper {
 
 	}
 
+	/**
+	 * 单例.
+	 * 
+	 * @return
+	 */
 	public static AnnotationHelper getInstance() {
 		if (helper == null) {
 			helper = new AnnotationHelper();
@@ -23,12 +35,18 @@ public class AnnotationHelper {
 	}
 
 	/**
+	 * 提取标注值.
 	 * 
 	 * @param clz
+	 *            被标注的类
 	 * @param method
+	 *            被标注的方法
 	 * @param defaultValue
+	 *            默认值
 	 * @param annotationClass
+	 *            标注类
 	 * @param methodName
+	 *            标注类的方法名
 	 * @return
 	 */
 	public String extractAnnotationValue(Class<?> clz, Method method,
@@ -37,13 +55,13 @@ public class AnnotationHelper {
 		try {
 			Annotation annotation = method.getAnnotation(annotationClass);
 			if (annotation != null) {
-				annotationValue = extractAnnotationValueInternal(annotationClass,
-						annotation, methodName);
+				annotationValue = extractAnnotationValueInternal(
+						annotationClass, annotation, methodName);
 			} else {
 				annotation = clz.getAnnotation(annotationClass);
 				if (annotation != null) {
-					annotationValue = extractAnnotationValueInternal(annotationClass,
-							annotation, methodName);
+					annotationValue = extractAnnotationValueInternal(
+							annotationClass, annotation, methodName);
 				}
 			}
 		} catch (Exception e) {
@@ -73,10 +91,14 @@ public class AnnotationHelper {
 	}
 
 	/**
+	 * 提取方法的注解.
 	 * 
 	 * @param method
+	 *            被标注的方法
 	 * @param aobj
+	 *            方法的参数
 	 * @param cls
+	 *            标注类
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
@@ -116,6 +138,17 @@ public class AnnotationHelper {
 		return value;
 	}
 
+	/**
+	 * 方法或类是否被标注.
+	 * 
+	 * @param clz
+	 *            被标注的类
+	 * @param method
+	 *            被标注的方法
+	 * @param annotationClass
+	 *            标注类
+	 * @return
+	 */
 	public boolean hasAnnotation(Class<?> clz, Method method,
 			Class annotationClass) {
 		return method.getAnnotation(annotationClass) == null ? (clz
