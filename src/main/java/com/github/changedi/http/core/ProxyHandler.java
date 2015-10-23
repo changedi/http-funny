@@ -139,7 +139,6 @@ public class ProxyHandler implements InvocationHandler {
 		String response = "";
 		String httpMethod = helper.extractAnnotationValue(clz, method, "get",
 				HttpMethod.class, "value");
-		System.out.println("method:" + httpMethod);
 		if ("get".equalsIgnoreCase(httpMethod)) {
 			response = httpCore.get(param);
 		} else if ("post".equalsIgnoreCase(httpMethod)) {
