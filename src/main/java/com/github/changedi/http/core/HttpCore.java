@@ -29,11 +29,10 @@ import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.config.ConnectionConfig;
 import org.apache.http.config.MessageConstraints;
 import org.apache.http.config.SocketConfig;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
@@ -52,11 +51,18 @@ public class HttpCore {
 	RequestConfig defaultRequestConfig;
 	CloseableHttpClient httpclient;
 
+	ResponseHandler<String> responseHandler;
+
 	private HttpCore() {
 		init();
 	}
 
 	public void init() {
+		initClient();
+		initHandler();
+	}
+
+	private void initClient() {
 		// Create a connection manager with custom configuration.
 		PoolingHttpClientConnectionManager connManager = new PoolingHttpClientConnectionManager();
 
@@ -101,71 +107,71 @@ public class HttpCore {
 				.setDefaultRequestConfig(defaultRequestConfig).build();
 	}
 
+	private void initHandler() {
+		responseHandler = new ResponseHandler<String>() {
+
+			@Override
+			public String handleResponse(final HttpResponse response)
+					throws ClientProtocolException, IOException {
+				int status = response.getStatusLine().getStatusCode();
+				if (status >= 200 && status < 300) {
+					HttpEntity entity = response.getEntity();
+					return entity != null ? EntityUtils.toString(entity) : null;
+				} else {
+					throw new ClientProtocolException(
+							"Unexpected response status: " + status);
+				}
+			}
+
+		};
+	}
+
+	/**
+	 * Default GET request.
+	 * 
+	 * @param httpParam
+	 * @return
+	 * @throws Exception
+	 */
 	public String get(HttpParam httpParam) throws Exception {
-		try {
-			HttpGet httpget = new HttpGet(httpParam.getUri());
-			httpget.setHeaders(httpParam.getHeadersArray());
-			if (httpParam.getRequestConfig() != null)
-				httpget.setConfig(httpParam.getRequestConfig());
+		HttpGet httpget = new HttpGet(httpParam.getUri());
+		httpget.setHeaders(httpParam.getHeadersArray());
+		if (httpParam.getRequestConfig() != null)
+			httpget.setConfig(httpParam.getRequestConfig());
+		return execute(httpget);
 
-			// Create a custom response handler
-			ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
-
-				@Override
-				public String handleResponse(final HttpResponse response)
-						throws ClientProtocolException, IOException {
-					int status = response.getStatusLine().getStatusCode();
-					if (status >= 200 && status < 300) {
-						HttpEntity entity = response.getEntity();
-						return entity != null ? EntityUtils.toString(entity)
-								: null;
-					} else {
-						throw new ClientProtocolException(
-								"Unexpected response status: " + status);
-					}
-				}
-
-			};
-			String responseBody = httpclient.execute(httpget, responseHandler);
-			return responseBody;
-		} finally {
-			httpclient.close();
-		}
 	}
 
+	/**
+	 * Default POST request.
+	 * 
+	 * @param httpParam
+	 * @return
+	 * @throws Exception
+	 */
 	public String post(HttpParam httpParam) throws Exception {
+		HttpPost httppost = new HttpPost(httpParam.getUri());
+		httppost.setHeaders(httpParam.getHeadersArray());
+		httppost.setEntity(httpParam.getEntity());
+		if (httpParam.getRequestConfig() != null)
+			httppost.setConfig(httpParam.getRequestConfig());
+		return execute(httppost);
+	}
+
+	private String execute(HttpRequestBase method) throws Exception {
 		try {
-			HttpPost httppost = new HttpPost(httpParam.getUri());
-			httppost.setHeaders(httpParam.getHeadersArray());
-			httppost.setEntity(httpParam.getEntity());
-			if (httpParam.getRequestConfig() != null)
-				httppost.setConfig(httpParam.getRequestConfig());
-
-			// Create a custom response handler
-			ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
-
-				@Override
-				public String handleResponse(final HttpResponse response)
-						throws ClientProtocolException, IOException {
-					int status = response.getStatusLine().getStatusCode();
-					if (status >= 200 && status < 300) {
-						HttpEntity entity = response.getEntity();
-						return entity != null ? EntityUtils.toString(entity)
-								: null;
-					} else {
-						throw new ClientProtocolException(
-								"Unexpected response status: " + status);
-					}
-				}
-
-			};
-			String responseBody = httpclient.execute(httppost, responseHandler);
+			String responseBody = httpclient.execute(method, responseHandler);
 			return responseBody;
 		} finally {
 			httpclient.close();
 		}
 	}
 
+	/**
+	 * Singleton.
+	 * 
+	 * @return
+	 */
 	public static HttpCore getInstance() {
 		if (hc == null) {
 			hc = new HttpCore();

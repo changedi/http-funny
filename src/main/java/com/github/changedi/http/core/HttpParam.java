@@ -14,6 +14,13 @@ import org.apache.http.message.BasicHeader;
 
 import com.google.common.collect.Lists;
 
+/**
+ * HttpCore依赖的HTTP 参数封装. Fluent Style API.
+ * 
+ * @author zunyuan.jy
+ *
+ * @since 2015年10月23日
+ */
 public class HttpParam {
 
 	public static RequestConfig DEFAULT_REQUEST_CONFIG = RequestConfig
