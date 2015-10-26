@@ -9,9 +9,10 @@ import com.github.changedi.http.core.demo.DemoService;
 
 public class DemoServiceTest {
 
+	DemoService demoService = new DemoService();
+	
 	@Test
-	public void test() {
-		DemoService demoService = new DemoService();
+	public void test() {		
 		Map<String, Object> result = demoService.get();
 		System.out.println(result);
 		Assert.assertNotNull(result);
@@ -19,7 +20,6 @@ public class DemoServiceTest {
 
 	@Test
 	public void testPost() {
-		DemoService demoService = new DemoService();
 		Map<String, Object> result = demoService.post();
 		System.out.println(result);
 		Assert.assertNotNull(result);
@@ -27,7 +27,6 @@ public class DemoServiceTest {
 
 	@Test
 	public void testPostJson() {
-		DemoService demoService = new DemoService();
 		Map<String, Object> result = demoService.postJson();
 		System.out.println(result);
 		Assert.assertNotNull(result);

@@ -29,6 +29,7 @@ import com.github.changedi.http.annotation.PathParam;
 import com.github.changedi.http.annotation.QueryParam;
 import com.github.changedi.http.annotation.Scheme;
 import com.github.changedi.http.annotation.Serialization;
+import com.github.changedi.http.annotation.consts.HttpMethodEnum;
 import com.github.changedi.http.annotation.consts.SerializationEnum;
 import com.github.changedi.http.exception.HttpConfigException;
 import com.google.common.collect.Lists;
@@ -97,11 +98,12 @@ public class ProxyHandler implements InvocationHandler {
 		String response = processHttpMethod(clz, method, param);
 
 		SerializationEnum serialization = processSerialization(clz, method);
-		Type returnType = method.getReturnType();
+
 		switch (serialization) {
 		case STRING:
 			return response;
 		case JSON:
+			Type returnType = method.getReturnType();
 			return gson.fromJson(response, returnType);
 		case XML:
 			throw new UnsupportedOperationException();
@@ -137,11 +139,12 @@ public class ProxyHandler implements InvocationHandler {
 	private String processHttpMethod(Class<?> clz, Method method,
 			HttpParam param) throws Exception {
 		String response = "";
-		String httpMethod = helper.extractAnnotationValue(clz, method, "get",
-				HttpMethod.class, "value");
-		if ("get".equalsIgnoreCase(httpMethod)) {
+		HttpMethodEnum httpMethod = (HttpMethodEnum) helper
+				.extractAnnotationValue(clz, method, HttpMethodEnum.GET,
+						HttpMethod.class, "value");
+		if (HttpMethodEnum.GET == httpMethod) {
 			response = httpCore.get(param);
-		} else if ("post".equalsIgnoreCase(httpMethod)) {
+		} else if (HttpMethodEnum.POST == httpMethod) {
 			response = httpCore.post(param);
 		}
 
@@ -149,13 +152,8 @@ public class ProxyHandler implements InvocationHandler {
 	}
 
 	private SerializationEnum processSerialization(Class<?> clz, Method method) {
-		String serialization = helper.extractAnnotationValue(clz, method,
-				"string", Serialization.class, "value");
-		if ("json".equalsIgnoreCase(serialization))
-			return SerializationEnum.JSON;
-		else if ("xml".equalsIgnoreCase(serialization))
-			return SerializationEnum.XML;
-		return SerializationEnum.STRING;
+		return (SerializationEnum) helper.extractAnnotationValue(clz, method,
+				SerializationEnum.STRING, Serialization.class, "value");
 	}
 
 	private void form(Class<?> clz, Method method, Map<String, Object> querys,
@@ -167,8 +165,8 @@ public class ProxyHandler implements InvocationHandler {
 		for (String key : querys.keySet()) {
 			builder.setParameter(key, querys.get(key).toString());
 		}
-		String pathStr = helper.extractAnnotationValue(clz, method, "",
-				Path.class, "value");
+		String pathStr = (String) helper.extractAnnotationValue(clz, method,
+				"", Path.class, "value");
 		if (StringUtils.isNotEmpty(pathStr)) {
 			for (String key : paths.keySet()) {
 				pathStr = pathStr.replace("{" + key + "}", paths.get(key)
@@ -201,7 +199,7 @@ public class ProxyHandler implements InvocationHandler {
 
 	private void processHost(Class<?> clz, Method method, URIBuilder builder,
 			String defaultValue) throws HttpConfigException {
-		String hostStr = helper.extractAnnotationValue(clz, method,
+		String hostStr = (String) helper.extractAnnotationValue(clz, method,
 				defaultValue, Host.class, "value");
 		if (StringUtils.isEmpty(hostStr)) {
 			throw new HttpConfigException();
@@ -212,7 +210,7 @@ public class ProxyHandler implements InvocationHandler {
 
 	private void processScheme(Class<?> clz, Method method, URIBuilder builder,
 			String defaultValue) {
-		String schemeStr = helper.extractAnnotationValue(clz, method,
+		String schemeStr = (String) helper.extractAnnotationValue(clz, method,
 				defaultValue, Scheme.class, "value");
 		builder.setScheme(schemeStr);
 	}

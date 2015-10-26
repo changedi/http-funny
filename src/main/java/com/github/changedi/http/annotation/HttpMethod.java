@@ -5,8 +5,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target({ElementType.METHOD})
+import com.github.changedi.http.annotation.consts.HttpMethodEnum;
+
+@Target({ ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface HttpMethod {
-	String value() default "get";
+	HttpMethodEnum value() default HttpMethodEnum.GET;
 }

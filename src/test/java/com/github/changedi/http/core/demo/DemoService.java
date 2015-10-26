@@ -5,14 +5,14 @@ import java.util.Map;
 
 import com.github.changedi.http.annotation.HttpService;
 import com.github.changedi.http.core.Callback;
-import com.github.changedi.http.core.HttpServiceAware;
+import com.github.changedi.http.core.HttpServiceBase;
 import com.github.changedi.http.core.demoservice.BaiduHttpService;
 import com.github.changedi.http.core.demoservice.model.FaceDeleteUserInternalModel;
 import com.github.changedi.http.core.demoservice.model.FaceDeleteUserModel;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
-public class DemoService extends HttpServiceAware {
+public class DemoService extends HttpServiceBase {
 
 	@HttpService
 	private BaiduHttpService service;

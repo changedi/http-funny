@@ -16,16 +16,16 @@ import com.github.changedi.http.annotation.HttpService;
  *
  * @since 2015年10月23日
  */
-public abstract class HttpServiceAware {
+public abstract class HttpServiceBase {
 
 	protected final Log logger = LogFactory.getLog(getClass());
 
 	private ProxyHandler proxyHandler;
 
-	public HttpServiceAware() {
+	public HttpServiceBase() {
 		proxyHandler = new ProxyHandler();
 
-		Class<? extends HttpServiceAware> clz = getClass();
+		Class<? extends HttpServiceBase> clz = getClass();
 		Field[] fields = clz.getDeclaredFields();
 		assert (fields != null);
 		for (Field field : fields) {

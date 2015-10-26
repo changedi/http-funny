@@ -49,9 +49,9 @@ public class AnnotationHelper {
 	 *            标注类的方法名
 	 * @return
 	 */
-	public String extractAnnotationValue(Class<?> clz, Method method,
-			String defaultValue, Class annotationClass, String methodName) {
-		String annotationValue = defaultValue;
+	public Object extractAnnotationValue(Class<?> clz, Method method,
+			Object defaultValue, Class annotationClass, String methodName) {
+		Object annotationValue = defaultValue;
 		try {
 			Annotation annotation = method.getAnnotation(annotationClass);
 			if (annotation != null) {
@@ -80,13 +80,13 @@ public class AnnotationHelper {
 	 * @throws IllegalAccessException
 	 * @throws InvocationTargetException
 	 */
-	private String extractAnnotationValueInternal(Class<?> annotationClass,
+	private Object extractAnnotationValueInternal(Class<?> annotationClass,
 			Annotation annotation, String methodName)
 			throws NoSuchMethodException, IllegalAccessException,
 			InvocationTargetException {
 		Object o = annotationClass.cast(annotation);
 		Method m = o.getClass().getMethod(methodName);
-		String value = m.invoke(o).toString();
+		Object value = m.invoke(o);
 		return value;
 	}
 
@@ -127,7 +127,7 @@ public class AnnotationHelper {
 				assert (parameterAnnotations[i].length <= 1) : "You should have at most one annotation on every parameter.";
 				if (parameterAnnotations[i].length > 0
 						&& parameterAnnotations[i][0].annotationType() == annotationClass) {
-					value = extractAnnotationValueInternal(annotationClass,
+					value = (String) extractAnnotationValueInternal(annotationClass,
 							parameterAnnotations[i][0], methodName);
 					break;
 				}

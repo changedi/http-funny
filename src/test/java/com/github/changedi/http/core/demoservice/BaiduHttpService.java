@@ -11,6 +11,8 @@ import com.github.changedi.http.annotation.PathParam;
 import com.github.changedi.http.annotation.QueryParam;
 import com.github.changedi.http.annotation.Scheme;
 import com.github.changedi.http.annotation.Serialization;
+import com.github.changedi.http.annotation.consts.HttpMethodEnum;
+import com.github.changedi.http.annotation.consts.SerializationEnum;
 import com.github.changedi.http.core.Callback;
 
 @Scheme
@@ -24,26 +26,26 @@ public abstract class BaiduHttpService {
 			@PathParam Map<String, Object> paths,
 			@HeaderParam Map<String, Object> headers);
 
-	@HttpMethod("get")
+	@HttpMethod(HttpMethodEnum.GET)
 	@Path("/apistore/weatherservice/citylist")
-	@Serialization("json")
+	@Serialization(SerializationEnum.JSON)
 	public abstract Map<String, Object> listcity2(
 			@QueryParam Map<String, Object> querys,
 			@PathParam Map<String, Object> paths,
 			@HeaderParam Map<String, Object> headers, Callback callback);
 
-	@HttpMethod("post")
+	@HttpMethod(HttpMethodEnum.POST)
 	@Path("/apistore/idlocr/ocr")
-	@Serialization("json")
+	@Serialization(SerializationEnum.JSON)
 	public abstract Map<String, Object> ocr(
 			@QueryParam Map<String, Object> querys,
 			@PathParam Map<String, Object> paths,
 			@HeaderParam Map<String, Object> headers,
 			@BodyParam("form") Map<String, Object> body, Callback callback);
 
-	@HttpMethod("post")
+	@HttpMethod(HttpMethodEnum.POST)
 	@Path("/idl_baidu/faceverifyservice/face_deleteuser")
-	@Serialization("json")
+	@Serialization(SerializationEnum.JSON)
 	public abstract Map<String, Object> face_deleteuser(
 			@QueryParam Map<String, Object> querys,
 			@PathParam Map<String, Object> paths,

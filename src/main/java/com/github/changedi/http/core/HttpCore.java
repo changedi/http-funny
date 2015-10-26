@@ -163,7 +163,7 @@ public class HttpCore {
 			String responseBody = httpclient.execute(method, responseHandler);
 			return responseBody;
 		} finally {
-			httpclient.close();
+			//httpclient.close();
 		}
 	}
 
