@@ -97,10 +97,7 @@ public class DemoService extends HttpServiceBase {
 		param.setParams(paramList);
 		
 		body.put("anykey", param);
-//		body.put(
-//				"anykey",
-//				"{\"params\": [    {      \"username\":\"test\",      \"cmdid\":\"1000\",      \"logid\": \"12345\",      \"appid\": \"31da01966ee96d06fdd5c2f2c855424e\",      \"clientip\":\"10.23.34.5\",      \"type\":\"st_groupverify\",      \"groupid\": \"0\",      \"versionnum\": \"1.0.0.1\",    }  ],  \"jsonrpc\": \"2.0\",  \"method\": \"Delete\",  \"id\":12}");
-		Map<String, Object> result = service.face_deleteuser(querys, paths,
+	Map<String, Object> result = service.face_deleteuser(querys, paths,
 				headers, body, new Callback() {
 					@Override
 					public void execute(Map<String, Object> querys,
