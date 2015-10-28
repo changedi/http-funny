@@ -30,6 +30,7 @@ import com.github.changedi.http.annotation.QueryParam;
 import com.github.changedi.http.annotation.Scheme;
 import com.github.changedi.http.annotation.Serialization;
 import com.github.changedi.http.annotation.consts.HttpMethodEnum;
+import com.github.changedi.http.annotation.consts.PostContentEnum;
 import com.github.changedi.http.annotation.consts.SerializationEnum;
 import com.github.changedi.http.exception.HttpConfigException;
 import com.google.common.collect.Lists;
@@ -113,16 +114,17 @@ public class ProxyHandler implements InvocationHandler {
 
 	private HttpEntity form(Method method, Map<String, Object> body) {
 		HttpEntity entity = null;
-		String postType = helper.extractParameterAnnotationValue(method,
-				"form", BodyParam.class, "value");
-		if ("form".equalsIgnoreCase(postType)) {
+		PostContentEnum postType = (PostContentEnum) helper
+				.extractParameterAnnotationValue(method, PostContentEnum.FORM,
+						BodyParam.class, "value");
+		if (PostContentEnum.FORM == postType) {
 			List<NameValuePair> parameters = Lists.newArrayList();
 			for (String key : body.keySet()) {
 				parameters.add(new BasicNameValuePair(key, body.get(key)
 						.toString()));
 			}
 			entity = new UrlEncodedFormEntity(parameters, Consts.UTF_8);
-		} else if ("json".equalsIgnoreCase(postType)) {
+		} else if (PostContentEnum.JSON == postType) {
 			String content = "";
 			for (Object value : body.values()) {
 				if (value instanceof String)

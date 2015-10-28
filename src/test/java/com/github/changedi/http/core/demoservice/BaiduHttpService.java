@@ -12,6 +12,7 @@ import com.github.changedi.http.annotation.QueryParam;
 import com.github.changedi.http.annotation.Scheme;
 import com.github.changedi.http.annotation.Serialization;
 import com.github.changedi.http.annotation.consts.HttpMethodEnum;
+import com.github.changedi.http.annotation.consts.PostContentEnum;
 import com.github.changedi.http.annotation.consts.SerializationEnum;
 import com.github.changedi.http.core.Callback;
 
@@ -41,7 +42,8 @@ public abstract class BaiduHttpService {
 			@QueryParam Map<String, Object> querys,
 			@PathParam Map<String, Object> paths,
 			@HeaderParam Map<String, Object> headers,
-			@BodyParam("form") Map<String, Object> body, Callback callback);
+			@BodyParam(PostContentEnum.FORM) Map<String, Object> body,
+			Callback callback);
 
 	@HttpMethod(HttpMethodEnum.POST)
 	@Path("/idl_baidu/faceverifyservice/face_deleteuser")
@@ -50,6 +52,7 @@ public abstract class BaiduHttpService {
 			@QueryParam Map<String, Object> querys,
 			@PathParam Map<String, Object> paths,
 			@HeaderParam Map<String, Object> headers,
-			@BodyParam("json") Map<String, Object> body, Callback callback);
+			@BodyParam(PostContentEnum.JSON) Map<String, Object> body,
+			Callback callback);
 
 }

@@ -117,9 +117,9 @@ public class AnnotationHelper {
 		return params;
 	}
 
-	public String extractParameterAnnotationValue(Method method,
-			String defaultValue, Class<?> annotationClass, String methodName) {
-		String value = defaultValue;
+	public Object extractParameterAnnotationValue(Method method,
+			Object defaultValue, Class<?> annotationClass, String methodName) {
+		Object value = defaultValue;
 		try {
 			Annotation[][] parameterAnnotations = method
 					.getParameterAnnotations();
@@ -127,7 +127,7 @@ public class AnnotationHelper {
 				assert (parameterAnnotations[i].length <= 1) : "You should have at most one annotation on every parameter.";
 				if (parameterAnnotations[i].length > 0
 						&& parameterAnnotations[i][0].annotationType() == annotationClass) {
-					value = (String) extractAnnotationValueInternal(annotationClass,
+					value = extractAnnotationValueInternal(annotationClass,
 							parameterAnnotations[i][0], methodName);
 					break;
 				}
